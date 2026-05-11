@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "idta-smt-walker"
+abstract: >-
+  A Python library that parses any IDTA Submodel Template JSON
+  (from admin-shell-io/submodel-templates) into a flat list of
+  typed nodes with path-based identity, plus a structural event
+  log. Empirically verified on 131 IDTA Submodel Template JSONs
+  with 11,124 nodes and zero unknown SME shapes.
+type: software
+authors:
+  - family-names: "Khori Jannatabadi"
+    given-names: "Mohammad Hadi"
+    email: "h.jannatabadi@iat.rwth-aachen.de"
+    affiliation: "Chair of Information and Automation Systems, RWTH Aachen University"
+version: 0.1.0
+date-released: "2026-05-11"
+license: MIT
+repository-code: "https://github.com/hadijannat/idta-smt-walker"
+keywords:
+  - "Asset Administration Shell"
+  - "AAS"
+  - "Industrial Digital Twin Association"
+  - "IDTA"
+  - "Submodel Template"
+  - "Digital Product Passport"
+  - "Industry 4.0"
+  - "Python"

@@ -1,0 +1,97 @@
+[build-system]
+requires = ["setuptools>=68", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "idta-smt-walker"
+description = "Parse any IDTA Submodel Template JSON into a flat list of typed nodes with path-based identity."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Mohammad Hadi Khori Jannatabadi", email = "h.jannatabadi@iat.rwth-aachen.de" },
+]
+keywords = [
+    "AAS",
+    "Asset Administration Shell",
+    "IDTA",
+    "Industrial Digital Twin Association",
+    "Submodel Template",
+    "Digital Product Passport",
+    "Industry 4.0",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = [
+    "pydantic>=2.6",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-cov>=5",
+    "ruff>=0.6",
+    "mypy>=1.10",
+]
+
+[project.urls]
+Homepage = "https://github.com/hadijannat/idta-smt-walker"
+Issues = "https://github.com/hadijannat/idta-smt-walker/issues"
+Repository = "https://github.com/hadijannat/idta-smt-walker"
+Changelog = "https://github.com/hadijannat/idta-smt-walker/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools_scm]
+write_to = "src/idta_smt_walker/_version.py"
+fallback_version = "0.1.0"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "UP",   # pyupgrade
+    "SIM",  # flake8-simplify
+    "RUF",  # ruff-specific
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]  # assert is fine in tests
+"examples/*" = ["T201"]  # print is fine in examples
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unused_ignores = true
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["tests.*", "examples.*"]
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+addopts = "-ra -q --cov=idta_smt_walker --cov-report=term-missing"
+testpaths = ["tests"]
