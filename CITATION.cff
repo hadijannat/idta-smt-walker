@@ -26,3 +26,7 @@ keywords:
   - "Digital Product Passport"
   - "Industry 4.0"
   - "Python"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.20127614"
+    description: "Archived release v0.1.0 on Zenodo"
