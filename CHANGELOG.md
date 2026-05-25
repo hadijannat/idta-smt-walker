@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- Expanded `README.md` with a "Design: a flat node graph" section covering the
+  data-model rationale (path-identified nodes versus generated object-oriented
+  instance classes), how the node graph composes into constraint validators,
+  prompt-anchored LLM extraction, and breaking-change diffs, and how the
+  structural-event log measures the zero-unknown-shapes coverage claim.
+- Cross-linked the companion repository `idta-smt-extraction-prompts`, which
+  consumes the node graph as the bounded template node graph that constrains
+  LLM emission.
+- Corrected the installation instruction to an honest from-source install
+  (`pip install git+https://github.com/hadijannat/idta-smt-walker`). The package
+  is not yet on PyPI.
+- Replaced the placeholder citation note with a Citation section stating the
+  Zenodo DOI `10.5281/zenodo.20127614`, a plaintext citation, and a BibTeX
+  `@software` entry.
+
 ## [0.1.0] — 2026-05-11
 
 ### Added

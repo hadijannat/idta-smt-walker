@@ -19,6 +19,26 @@
 
 The output is intended as a stable substrate for downstream tools such as constraint validators, prompt-anchored LLM extractors, and breaking-change diff tools across IDTA spec versions.
 
+## Design: a flat node graph
+
+`walk_nodes` emits a flat ordered list of path-identified nodes rather than a tree of typed object-oriented instance classes. The contrasting design, generating one Python class per Submodel Element type, is taken by [`rwth-iat/aas-submodel-template-to-py`](https://github.com/rwth-iat/aas-submodel-template-to-py) (see Related work). That approach binds the consumer to a generated class hierarchy that must be regenerated whenever a Submodel Template changes. The flat node graph keeps a single uniform node type and moves all structure into the `aas_path` string, so the same code reads every Submodel Template.
+
+Path-based identity is what makes the substrate composable downstream:
+
+- **Constraint validators** key cardinality and semantic-id rules to `aas_path`, so a rule references a stable string rather than a position in a class tree.
+- **Prompt-anchored LLM extraction** uses the node graph as a bounded enumeration of the fields an extractor is allowed to populate. Each `aas_path` is a slot, and abstention is the absence of a value for a slot.
+- **Breaking-change diffs** across IDTA spec versions reduce to a set difference over `aas_path` values plus a comparison of `cardinality_from_json` and `semantic_id` per shared path. The retained `cardinality_qualifier_raw` field preserves the verbatim source string so qualifier drift between versions stays visible.
+
+### Downstream composition
+
+The companion repository [`idta-smt-extraction-prompts`](https://github.com/hadijannat/idta-smt-extraction-prompts) consumes this node graph as the bounded template node graph that constrains LLM emission. The walker defines which paths exist for a given Submodel Template, and the extractor populates values only for those paths. The two repositories together back an ETFA 2026 academic paper on schema-constrained extraction.
+
+### The structural-event log
+
+Every walk returns a `WalkResult` carrying both `nodes` and `events`. Events are non-fatal structural observations. The walker logs them rather than raising, so a walk over a malformed or non-standard Submodel Template still returns a complete node graph alongside a diagnostic trail. A `SubmodelElementList` with an empty `value`, for example, records a `list_without_prototype` event and continues. An unrecognised Submodel Element type records a `walker_unknown_shape` event.
+
+This design is how the coverage claim below is measured. Walking all 131 templates and counting `walker_unknown_shape` events yields the **0 unknown shapes** result. A non-zero count would name the template and the path where the walker met a shape outside its known leaf and container sets.
+
 ## Verified coverage
 
 Empirically verified on **131 IDTA Submodel Template JSONs** (across 47+ template categories, including 02002 Contact Information, 02003 Technical Data, 02004 Handover Documentation, 02006 Digital Nameplate, 02011 Hierarchical Structures, 02017 Asset Interfaces, 02021 Power Drive Trains, 02023 Carbon Footprint, 02050 Purchase Order, and AAS Metamodel V3.1 variants):
@@ -42,11 +62,13 @@ See [`examples/walk_all_idta_templates.py`](examples/walk_all_idta_templates.py)
 
 ## Installation
 
+Install from source:
+
 ```bash
-pip install idta-smt-walker
+pip install git+https://github.com/hadijannat/idta-smt-walker
 ```
 
-Requires Python 3.11+ and depends on `pydantic>=2.6`.
+Requires Python 3.11+ and depends on `pydantic>=2.6`. A PyPI release is planned.
 
 ## Quick start
 
@@ -123,7 +145,24 @@ result.events  # list[Event]
 
 ## Citation
 
-If you use this software, please cite it via the metadata in [`CITATION.cff`](CITATION.cff). Once a Zenodo DOI is assigned it will be included there as well.
+This software is archived on Zenodo under the concept DOI [10.5281/zenodo.20127614](https://doi.org/10.5281/zenodo.20127614). The machine-readable metadata is in [`CITATION.cff`](CITATION.cff).
+
+Plaintext:
+
+> Khori Jannatabadi, M. H. (2026). *idta-smt-walker* (Version 0.1.0) [Computer software]. https://doi.org/10.5281/zenodo.20127614
+
+BibTeX:
+
+```bibtex
+@software{khorijannatabadi_idta_smt_walker_2026,
+  author    = {Khori Jannatabadi, Mohammad Hadi},
+  title     = {idta-smt-walker},
+  year      = {2026},
+  version   = {0.1.0},
+  doi       = {10.5281/zenodo.20127614},
+  url       = {https://github.com/hadijannat/idta-smt-walker}
+}
+```
 
 ## License
 
